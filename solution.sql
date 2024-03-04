@@ -53,9 +53,65 @@ GROUP BY `department_id`;
 
 -- JOIN
 -- 1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
+SELECT D.`name`, S.`name`, S.`surname`
+FROM `students` AS S
+JOIN `exam_student` AS ES
+ON S.`id` = ES.`student_id`
+JOIN `exams` AS E 
+ON E.`id` = ES.`exam_id`
+JOIN `courses` AS C
+ON C.`id` = E.`course_id`
+JOIN `degrees` AS D 
+ON D.`id` = C.`degree_id` 
+WHERE D.`name` = 'Corso di Laurea in Economia';
 -- 2. Selezionare tutti i Corsi di Laurea del Dipartimento di Neuroscienze
+SELECT * 
+FROM `degrees` AS DEG
+JOIN `departments` AS DEP 
+ON DEP.`id` = DEG.`department_id`
+WHERE DEP.`name` = 'Dipartimento di Neuroscienze';
 -- 3. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44)
+SELECT C.`name`, T.`name`, T.`surname`, CT.`teacher_id`
+FROM `course_teacher` AS CT
+JOIN `teachers` AS T 
+ON T.`id` = CT.`teacher_id`
+JOIN `courses` AS C 
+ON C.`id` = CT.`course_id`
+WHERE T.`surname` = 'Amato'
+AND T.`name` = 'Fulvio';
 -- 4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e nome
+SELECT DEP.`name`, DEG.`name`, S.`name`, S.`surname`
+FROM `students` AS S
+JOIN `exam_student` AS ES
+ON S.`id` = ES.`student_id`
+JOIN `exams` AS E 
+ON E.`id` = ES.`exam_id`
+JOIN `courses` AS C
+ON C.`id` = E.`course_id`
+JOIN `degrees` AS DEG 
+ON DEG.`id` = C.`degree_id` 
+JOIN `departments` AS DEP 
+ON DEP.`id` = DEG.`department_id`
+ORDER BY S.`surname` ASC;
 -- 5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
+SELECT  D.`name`, C.`name`,T.`name`, T.`surname` 
+FROM `degrees` AS D
+JOIN `courses` AS C
+ON D.`id` = C.`degree_id`
+JOIN `course_teacher` AS CT
+ON C.`id` = CT.`course_id` 
+JOIN `teachers` AS T 
+ON T.`id` = CT.`teacher_id`;
 -- 6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
--- 7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esam
+SELECT  DEP.`name`, T.`name`, T.`surname`
+FROM `departments` AS DEP 
+JOIN `degrees` AS DEG 
+ON DEP.`id` = DEG.`department_id` 
+JOIN `courses`AS C 
+ON DEG.`id` = C.`degree_id`
+JOIN `course_teacher` AS CT 
+ON C.`id` = CT.`course_id`
+JOIN `teachers` AS T
+ON T.`id` = CT.`teacher_id`
+WHERE DEP.`name` = 'Dipartimento di Matematica';
+-- 7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
