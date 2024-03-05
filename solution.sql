@@ -92,7 +92,7 @@ JOIN `degrees` AS DEG
 ON DEG.`id` = C.`degree_id` 
 JOIN `departments` AS DEP 
 ON DEP.`id` = DEG.`department_id`
-ORDER BY S.`surname` ASC;
+ORDER BY S.`surname`, S.`name` ASC;
 -- 5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
 SELECT  D.`name`, C.`name`,T.`name`, T.`surname` 
 FROM `degrees` AS D
@@ -103,7 +103,7 @@ ON C.`id` = CT.`course_id`
 JOIN `teachers` AS T 
 ON T.`id` = CT.`teacher_id`;
 -- 6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
-SELECT  DEP.`name`, T.`name`, T.`surname`
+SELECT DISTINCT T.`name`, T.`surname`
 FROM `departments` AS DEP 
 JOIN `degrees` AS DEG 
 ON DEP.`id` = DEG.`department_id` 
@@ -115,3 +115,14 @@ JOIN `teachers` AS T
 ON T.`id` = CT.`teacher_id`
 WHERE DEP.`name` = 'Dipartimento di Matematica';
 -- 7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
+SELECT S.`name`, S.`surname`, C.`name` AS `nome_corso`, COUNT(ES.`vote`) AS `numero_tentativi`, MAX(ES.`vote`) AS `voto_massimo`
+FROM `students` AS S 
+JOIN `exam_students` AS ES 
+ON S.`id` = ES.`student_id` 
+JOIN `exams` AS E 
+ON E.`id` = ES.`exa,_id`
+JOIN `courses` AS C 
+ON C.`id` = E.`course_id`
+GROUP BY S.`id`, C.`id`
+HAVING `voto_massimo` >= 18
+ORDER BY S.`surname`, S.`name`;
